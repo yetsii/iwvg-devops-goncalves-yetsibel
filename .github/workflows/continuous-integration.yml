@@ -54,6 +54,7 @@ jobs:
       - name: 📊 Sonar Analysis
         run: >
           mvn -B sonar:sonar 
+          #deberia funcionar con -Dsonar.projectKey=${{ env.ARTIFACT }} 
           -Dsonar.projectKey=yetsii${{ env.ARTIFACT }}
           -Dsonar.organization=yetsii 
           -Dsonar.host.url=https://sonarcloud.io 
