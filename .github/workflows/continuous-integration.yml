@@ -54,7 +54,7 @@ jobs:
       - name: 📊 Sonar Analysis
         run: >
           mvn -B sonar:sonar 
-          -Dsonar.projectKey=yetsii${{ env.ARTIFACT }}
+          -Dsonar.projectKey=yetsii_${{ env.ARTIFACT }}
           -Dsonar.organization=yetsii 
           -Dsonar.host.url=https://sonarcloud.io 
           -Dsonar.token=${{ secrets.SONAR_TOKEN }}
