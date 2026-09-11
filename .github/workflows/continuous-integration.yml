@@ -1,7 +1,8 @@
-name: CI
+name: CI iwvg-devops-goncalves-yetsibel
+
 on:
   push:
-    branches: [develop,v-*]
+    branches: [develop, v-*]
 
 jobs:
   devops:
@@ -53,10 +54,21 @@ jobs:
 
       - name: 📊 Sonar Analysis
         run: >
-          mvn -B sonar:sonar 
+          mvn -B sonar:sonar
           -Dsonar.projectKey=yetsii_${{ env.ARTIFACT }}
-          -Dsonar.organization=yetsii 
-          -Dsonar.host.url=https://sonarcloud.io 
+          -Dsonar.organization=yetsii
+          -Dsonar.host.url=https://sonarcloud.io
           -Dsonar.token=${{ secrets.SONAR_TOKEN }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: 🔔 Notify Slack on success
+        if: success()
+        uses: slackapi/slack-github-action@v1.26.0
+        with:
+          payload: |
+            {
+              "text": "✅ *¡Integración Continua Exitosa!*\n*Repositorio:* ${{ github.repository }}\n*Rama:* ${{ github.ref_name }}\n*Autor:* ${{ github.actor }}\n*Commit:* ${{ github.sha }}\n*Estado:* La API Spring Boot ha sido compilada y validada correctamente con las pruebas de Maven."
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
