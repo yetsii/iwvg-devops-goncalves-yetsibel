@@ -4,10 +4,6 @@ on:
     branches:
       - staging
 
-permissions:
-  contents: read
-  packages: write
-
 jobs:
   cd:
     name: Build & Push GitHub Package & Deploy on Render Docker Image
