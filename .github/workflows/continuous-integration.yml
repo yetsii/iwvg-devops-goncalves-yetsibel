@@ -2,9 +2,7 @@ name: CI iwvg-devops-goncalves-yetsibel
 
 on:
   push:
-    branches: [develop, release-*]
-    tags:
-      - 'v*'
+    branches: [develop, master]
 
 jobs:
   devops:
