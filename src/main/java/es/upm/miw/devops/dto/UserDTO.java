@@ -1,19 +1,21 @@
-package es.upm.miw.devops.code;
+package es.upm.miw.devops.dto;
+
+import es.upm.miw.devops.code.Fraction;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class User {
+public class UserDTO {
     private String id;
     private String name;
     private String familyName;
     private List<Fraction> fractions;
 
-    public User() {
+    public UserDTO() {
         this.fractions = new ArrayList<>();
     }
 
-    public User(String id, String name, String familyName, List<Fraction> fractions) {
+    public UserDTO(String id, String name, String familyName, List<Fraction> fractions) {
         this.id = id;
         this.name = name;
         this.familyName = familyName;

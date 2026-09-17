@@ -1,6 +1,5 @@
-package es.upm.miw.devops.functionaltests;
+package es.upm.miw.devops.controller;
 
-import es.upm.miw.devops.code.User;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
@@ -8,38 +7,39 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
+import static es.upm.miw.devops.controller.SystemController.SYSTEM;
+import static es.upm.miw.devops.controller.SystemController.VERSION_BADGE;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureWebTestClient
 @ActiveProfiles("test")
-class UserResourceFT {
+class SystemControllerFT {
 
     @Autowired
     private WebTestClient webTestClient;
 
     @Test
-    void testReadUserById() {
+    void testReadBadge() {
         webTestClient.get()
-                .uri("/user/1")
+                .uri(VERSION_BADGE)
                 .exchange()
                 .expectStatus().isOk()
-                .expectBody(User.class)
-                .value(user -> {
-                    assertThat(user.getId()).isEqualTo("1");
-                    assertThat(user.getName()).isEqualTo("Oscar");
-                    assertThat(user.getFamilyName()).isEqualTo("Fernandez");
-                });
+                .expectBody(String.class)
+                .value(body -> assertThat(body)
+                        .isNotNull()
+                        .startsWith("<svg"));
     }
 
     @Test
-    void testReadUserByIdNotFound() {
+    void testReadInfo() {
         webTestClient.get()
-                .uri("/user/999")
+                .uri(SYSTEM)
                 .exchange()
-                .expectStatus().isNotFound()
-                .expectBody()
-                .jsonPath("$.code").isEqualTo(404)
-                .jsonPath("$.message").value(message -> assertThat(String.valueOf(message)).contains("User not found: 999"));
+                .expectStatus().isOk()
+                .expectBody(String.class)
+                .value(body -> assertThat(body)
+                        .isNotNull()
+                        .isNotEmpty());
     }
 }
