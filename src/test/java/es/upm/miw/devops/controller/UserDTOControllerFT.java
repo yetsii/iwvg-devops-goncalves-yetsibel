@@ -58,4 +58,28 @@ class UserDTOControllerFT {
                 .jsonPath("$.code").isEqualTo(404)
                 .jsonPath("$.message").value(message -> assertThat(String.valueOf(message)).contains("User not found: 999"));
     }
+
+    @Test
+    void testDeleteUserById() {
+        org.mockito.Mockito.doNothing().when(userService).delete("1");
+
+        webTestClient.delete()
+                .uri("/user/1")
+                .exchange()
+                .expectStatus().isNoContent();
+    }
+
+    @Test
+    void testDeleteUserByIdNotFound() {
+        org.mockito.Mockito.doThrow(new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found: 999"))
+                .when(userService).delete("999");
+
+        webTestClient.delete()
+                .uri("/user/999")
+                .exchange()
+                .expectStatus().isNotFound()
+                .expectBody()
+                .jsonPath("$.code").isEqualTo(404)
+                .jsonPath("$.message").value(message -> assertThat(String.valueOf(message)).contains("User not found: 999"));
+    }
 }
