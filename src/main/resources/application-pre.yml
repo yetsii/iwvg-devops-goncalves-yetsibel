@@ -1,8 +1,4 @@
 spring:
-  profiles:
-    # Profile ----------------------------------------
-    active: pre
-  # ------------------------------------------------
   output:
     ansi:
       enabled: ALWAYS
