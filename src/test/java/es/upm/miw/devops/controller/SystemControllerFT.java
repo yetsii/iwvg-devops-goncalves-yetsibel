@@ -1,21 +1,25 @@
-package es.upm.miw.devops.functionaltests;
+package es.upm.miw.devops.controller;
 
-import es.upm.miw.devops.rest.SystemResource;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
+import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
-import static es.upm.miw.devops.rest.SystemResource.SYSTEM;
-import static es.upm.miw.devops.rest.SystemResource.VERSION_BADGE;
+import static es.upm.miw.devops.controller.SystemController.SYSTEM;
+import static es.upm.miw.devops.controller.SystemController.VERSION_BADGE;
 import static org.assertj.core.api.Assertions.assertThat;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@WebFluxTest(SystemController.class)
 @AutoConfigureWebTestClient
-@ActiveProfiles("test")
-class SystemResourceFT {
+@TestPropertySource(properties = {
+        "info.app.artifact=test-app",
+        "info.app.version=1.0.0",
+        "info.app.build=20260918",
+        "spring.autoconfigure.exclude=org.springframework.boot.autoconfigure.security.reactive.ReactiveSecurityAutoConfiguration"
+})
+class SystemControllerFT {
 
     @Autowired
     private WebTestClient webTestClient;

@@ -1,5 +1,7 @@
 package es.upm.miw.devops.code;
 
+import es.upm.miw.devops.dto.UserDTO;
+
 import java.util.Objects;
 import java.util.stream.Stream;
 
@@ -8,7 +10,7 @@ public class Searches {
     public Stream<String> findUserFamilyNameByUserNameDistinct(String userName) {
         return new UsersDatabase().findAll()
                 .filter(user -> userName.equals(user.getName()))
-                .map(User::getFamilyName)
+                .map(UserDTO::getFamilyName)
                 .distinct();
     }
 
@@ -25,7 +27,7 @@ public class Searches {
         return new UsersDatabase().findAll()
                 .filter(user -> user.getFractions().stream()
                         .anyMatch(fraction -> fractionDenominator == fraction.getDenominator()))
-                .map(User::getFamilyName);
+                .map(UserDTO::getFamilyName);
     }
 
     public Stream<String> findUserFamilyNameInitialByAnyProperFraction() {
