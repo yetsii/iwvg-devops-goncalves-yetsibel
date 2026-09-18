@@ -27,6 +27,8 @@ public class UserService {
     }
 
     private static UserDTO toDto(User user) {
-        return new UserDTO(user.getId(), user.getName(), user.getFamilyName(), user.getFractions());
+        UserDTO dto = new UserDTO(user.getId(), user.getName(), user.getFamilyName(), user.getFractions());
+        dto.setBillable(user.isBillable());
+        return dto;
     }
 }

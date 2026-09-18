@@ -1,5 +1,6 @@
 package es.upm.miw.devops.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import es.upm.miw.devops.code.Fraction;
 
 import java.util.ArrayList;
@@ -9,6 +10,7 @@ public class UserDTO {
     private String id;
     private String name;
     private String familyName;
+    private boolean isBillable;
     private List<Fraction> fractions;
 
     public UserDTO() {
@@ -16,9 +18,14 @@ public class UserDTO {
     }
 
     public UserDTO(String id, String name, String familyName, List<Fraction> fractions) {
+        this(id, name, familyName, false, fractions);
+    }
+
+    public UserDTO(String id, String name, String familyName, boolean isBillable, List<Fraction> fractions) {
         this.id = id;
         this.name = name;
         this.familyName = familyName;
+        this.isBillable = isBillable;
         this.fractions = fractions;
     }
 
@@ -40,6 +47,16 @@ public class UserDTO {
 
     public void setFamilyName(String familyName) {
         this.familyName = familyName;
+    }
+
+    @JsonProperty("isBillable")
+    public boolean isBillable() {
+        return isBillable;
+    }
+
+    @JsonProperty("isBillable")
+    public void setBillable(boolean billable) {
+        isBillable = billable;
     }
 
     public List<Fraction> getFractions() {
@@ -68,6 +85,7 @@ public class UserDTO {
                 "id='" + id + '\'' +
                 ", name='" + name + '\'' +
                 ", familyName='" + familyName + '\'' +
+                ", isBillable=" + isBillable +
                 ", fractions=" + fractions +
                 '}';
     }
