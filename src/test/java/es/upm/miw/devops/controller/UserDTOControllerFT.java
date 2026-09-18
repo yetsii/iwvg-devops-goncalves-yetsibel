@@ -66,7 +66,8 @@ class UserDTOControllerFT {
         webTestClient.delete()
                 .uri("/user/1")
                 .exchange()
-                .expectStatus().isNoContent();
+                .expectStatus().isNoContent()
+                .expectHeader().valueEquals("X-Message", "user deleted successfully");
     }
 
     @Test
