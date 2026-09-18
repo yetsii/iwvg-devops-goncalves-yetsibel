@@ -26,6 +26,14 @@ public class UserService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found: " + id));
     }
 
+    @Transactional
+    public void delete(String id) {
+        if (!userRepository.existsById(id)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found: " + id);
+        }
+        userRepository.deleteById(id);
+    }
+
     private static UserDTO toDto(User user) {
         UserDTO dto = new UserDTO(user.getId(), user.getName(), user.getFamilyName(), user.getFractions());
         dto.setBillable(user.isBillable());
