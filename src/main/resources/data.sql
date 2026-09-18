@@ -7,11 +7,11 @@ INSERT INTO users (id, name, first_name, family_name, email, identity, address, 
     ('6', 'Paula', 'Paula', 'Torres', 'paula.torres@example.com', '67890123F', 'Calle de la Luna 9', 'Málaga', 'Málaga', NULL)
     ON CONFLICT (id)  DO UPDATE SET
     name = EXCLUDED.name,
-        first_name = EXCLUDED.first_name,
-        family_name = EXCLUDED.family_name,
-        email = EXCLUDED.email,
-        identity = EXCLUDED.identity,
-        address = EXCLUDED.address,
-        city = EXCLUDED.city,
-        province = EXCLUDED.province,
-        postal_code = EXCLUDED.postal_code;
+    first_name = EXCLUDED.first_name,
+    family_name = EXCLUDED.family_name,
+    email = EXCLUDED.email,
+    identity = EXCLUDED.identity,
+    address = EXCLUDED.address,
+    city = EXCLUDED.city,
+    province = EXCLUDED.province,
+    postal_code = EXCLUDED.postal_code;
