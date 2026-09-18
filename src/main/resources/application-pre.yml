@@ -1,34 +1,22 @@
+app:
+  hosting: render
+
 spring:
-  output:
-    ansi:
-      enabled: ALWAYS
-  cache:
-    type: none
-  jackson:
-    default-property-inclusion: NON_NULL
-  datasource:
-    url: jdbc:postgresql://dpg-damllg6k1f9s739h970g-a:5432/iwvg_yetsi
-    username: postgresiwvg
-    password: "eGVYLfNyt7azhAq0HaEvYxK1HC4pQcUp"
-    driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
       ddl-auto: update
+  # Valores creados en Render → Databases → Database → Connect
+  # actualizado
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
     defer-datasource-initialization: true
     show-sql: true
     properties:
       hibernate:
         format_sql: true
-  sql:
-    init:
-      mode: always
-
-info:
-  app:
-    hosting: render
-    artifact: "@project.artifactId@"
-    version: "@project.version@"
-    build: "@maven.build.timestamp@"
 
 logging:
   level:
