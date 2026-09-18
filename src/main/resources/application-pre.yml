@@ -11,7 +11,7 @@ spring:
   jackson:
     default-property-inclusion: NON_NULL
   datasource:
-    url: postgresql://postgresiwvg:eGVYLfNyt7azhAq0HaEvYxK1HC4pQcUp@dpg-damllg6k1f9s739h970g-a/iwvg_yetsi
+    url: jdbc:postgresql://dpg-damllg6k1f9s739h970g-a:5432/iwvg_yetsi
     username: postgresiwvg
     password: "eGVYLfNyt7azhAq0HaEvYxK1HC4pQcUp"
     driver-class-name: org.postgresql.Driver
