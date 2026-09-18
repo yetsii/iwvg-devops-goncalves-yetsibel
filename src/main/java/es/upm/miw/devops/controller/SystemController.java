@@ -1,4 +1,4 @@
-package es.upm.miw.devops.rest;
+package es.upm.miw.devops.controller;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -6,8 +6,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(SystemResource.SYSTEM)
-public class SystemResource {
+@RequestMapping(SystemController.SYSTEM)
+public class SystemController {
     public static final String SYSTEM = "/";
     public static final String VERSION_BADGE = "/version-badge";
     private static final String BADGE_IMAGE_TEMPLATE = """
