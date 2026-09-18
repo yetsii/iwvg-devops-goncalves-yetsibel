@@ -22,6 +22,12 @@ class UserDTOServiceTest {
     @Test
     void testFindByIdReturnsUserFromDatabase() {
         User user = new User("1", "Oscar", "Fernandez", List.of(new Fraction(1, 1)));
+        user.setEmail("oscar@example.com");
+        user.setIdentity("12345678A");
+        user.setAddress("Calle Mayor 1");
+        user.setCity("Madrid");
+        user.setProvince("Madrid");
+        user.setPostalCode("28001");
         when(userRepository.findById("1")).thenReturn(java.util.Optional.of(user));
 
         UserDTO userDTO = userService.findById("1");
@@ -29,6 +35,7 @@ class UserDTOServiceTest {
         assertThat(userDTO.getId()).isEqualTo("1");
         assertThat(userDTO.getName()).isEqualTo("Oscar");
         assertThat(userDTO.getFamilyName()).isEqualTo("Fernandez");
+        assertThat(userDTO.isBillable()).isTrue();
     }
 
     @Test

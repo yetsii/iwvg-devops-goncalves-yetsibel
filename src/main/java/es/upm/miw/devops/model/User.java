@@ -21,6 +21,27 @@ public class User {
     @Column(name = "family_name", nullable = false)
     private String familyName;
 
+    @Column(name = "first_name")
+    private String firstName;
+
+    @Column(name = "email")
+    private String email;
+
+    @Column(name = "identity")
+    private String identity;
+
+    @Column(name = "address")
+    private String address;
+
+    @Column(name = "city")
+    private String city;
+
+    @Column(name = "province")
+    private String province;
+
+    @Column(name = "postal_code")
+    private String postalCode;
+
     @Transient
     private List<Fraction> fractions;
 
@@ -31,6 +52,7 @@ public class User {
     public User(String id, String name, String familyName, List<Fraction> fractions) {
         this.id = id;
         this.name = name;
+        this.firstName = name;
         this.familyName = familyName;
         this.fractions = fractions != null ? fractions : new ArrayList<>();
     }
@@ -44,11 +66,21 @@ public class User {
     }
 
     public String getName() {
-        return name;
+        return name != null ? name : getFirstName();
     }
 
     public void setName(String name) {
         this.name = name;
+        this.firstName = name;
+    }
+
+    public String getFirstName() {
+        return firstName != null ? firstName : name;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+        this.name = firstName;
     }
 
     public String getFamilyName() {
@@ -57,6 +89,54 @@ public class User {
 
     public void setFamilyName(String familyName) {
         this.familyName = familyName;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getIdentity() {
+        return identity;
+    }
+
+    public void setIdentity(String identity) {
+        this.identity = identity;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public String getProvince() {
+        return province;
+    }
+
+    public void setProvince(String province) {
+        this.province = province;
+    }
+
+    public String getPostalCode() {
+        return postalCode;
+    }
+
+    public void setPostalCode(String postalCode) {
+        this.postalCode = postalCode;
     }
 
     public List<Fraction> getFractions() {
@@ -71,12 +151,28 @@ public class User {
         this.fractions.add(fraction);
     }
 
+    public boolean isBillable() {
+        return hasContent(getFirstName())
+                && hasContent(getFamilyName())
+                && hasContent(email)
+                && hasContent(identity)
+                && hasContent(address)
+                && hasContent(city)
+                && hasContent(province)
+                && hasContent(postalCode);
+    }
+
+    private boolean hasContent(String value) {
+        return value != null && !value.trim().isEmpty();
+    }
+
     public String fullName() {
-        return this.name + " " + this.familyName;
+        return getName() + " " + getFamilyName();
     }
 
     public String initials() {
-        return this.name == null || this.name.isEmpty() ? "" : this.name.charAt(0) + ".";
+        String firstName = getName();
+        return firstName == null || firstName.isBlank() ? "" : firstName.trim().charAt(0) + ".";
     }
 
     @Override
