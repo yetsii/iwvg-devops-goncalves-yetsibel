@@ -4,7 +4,7 @@ services:
     image: devops:latest
     restart: always
     ports:
-      - "8080:8080"
+      - "10000:10000"
     networks:
       - devopsNet
 
