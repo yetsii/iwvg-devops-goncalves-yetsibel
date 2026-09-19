@@ -1,5 +1,16 @@
+logging:
+  level:
+    root: WARN
+    es.upm.miw: DEBUG
+
 app:
   hosting: render
+
+springdoc:
+  api-docs:
+    enabled: true
+  swagger-ui:
+    enabled: true
 
 spring:
   jpa:
@@ -17,11 +28,6 @@ spring:
     properties:
       hibernate:
         format_sql: true
-
-logging:
-  level:
-    root: WARN
-    es.upm.miw: DEBUG
 
 management:
   endpoints:

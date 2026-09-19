@@ -7,7 +7,7 @@ services:
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: "0000"
-      POSTGRES_DB: IWVG_Yetsi
+      POSTGRES_DB: iwvg_yetsi
     ports:
       - "5432:5432"
     volumes:
