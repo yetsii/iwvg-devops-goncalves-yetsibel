@@ -1,9 +1,23 @@
+logging:
+  level:
+    root: WARN
+    es.upm.miw: INFO
+
+app:
+  hosting: AWS
+
+springdoc:
+  api-docs:
+    enabled: true
+  swagger-ui:
+    enabled: true
+
 server:
   port: 10000
 
 spring:
   datasource:
-    url: jdbc:postgresql://postgres-server:5432/IWVG_Yetsi
+    url: jdbc:postgresql://postgres-server:5432/iwvg_yetsi
     username: postgres
     password: "0000"
     driver-class-name: org.postgresql.Driver
