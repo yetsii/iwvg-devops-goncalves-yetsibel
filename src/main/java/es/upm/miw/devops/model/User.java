@@ -42,6 +42,9 @@ public class User {
     @Column(name = "postal_code")
     private String postalCode;
 
+    @Column(name = "active", nullable = false)
+    private boolean active = true;
+
     @Transient
     private List<Fraction> fractions;
 
@@ -89,6 +92,14 @@ public class User {
 
     public void setFamilyName(String familyName) {
         this.familyName = familyName;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
     }
 
     public String getEmail() {
