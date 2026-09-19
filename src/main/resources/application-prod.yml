@@ -17,7 +17,7 @@ server:
 
 spring:
   datasource:
-    url: jdbc:postgresql://postgres-server:5432/iwvg_yetsi
+    url: jdbc:postgresql://postgres:5432/iwvg_yetsi
     username: postgres
     password: "0000"
     driver-class-name: org.postgresql.Driver
