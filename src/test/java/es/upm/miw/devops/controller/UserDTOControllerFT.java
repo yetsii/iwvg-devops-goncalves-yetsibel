@@ -92,9 +92,7 @@ class UserDTOControllerFT {
         when(userService.setActive("1", true)).thenReturn(userDTO);
 
         webTestClient.put()
-                .uri("/user/1/active")
-                .contentType(MediaType.APPLICATION_JSON)
-                .bodyValue(Map.of("active", true))
+                .uri("/user/1/active?active=true")
                 .exchange()
                 .expectStatus().isOk()
                 .expectHeader().valueEquals("X-Message", "user activated successfully")
@@ -110,9 +108,7 @@ class UserDTOControllerFT {
         when(userService.setActive("999", true)).thenThrow(new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found: 999"));
 
         webTestClient.put()
-                .uri("/user/999/active")
-                .contentType(MediaType.APPLICATION_JSON)
-                .bodyValue(Map.of("active", true))
+                .uri("/user/999/active?active=true")
                 .exchange()
                 .expectStatus().isNotFound()
                 .expectBody()
