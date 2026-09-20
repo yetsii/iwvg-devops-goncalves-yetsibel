@@ -4,6 +4,10 @@ on:
     branches:
       - master
 
+concurrency:
+  group: lightsail-deploy
+  cancel-in-progress: false
+
 jobs:
   cd:
     name: Build & Push GitHub Package & Deploy on Render Docker Image
