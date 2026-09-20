@@ -23,9 +23,6 @@ COPY --from=build /app/target/*.jar app.jar
    # Define un comando para cuando se inicialice el contenedor en el host: java -jar app.jar
 CMD ["java", "-jar", "app.jar"]
 
-HEALTHCHECK --interval=120s --timeout=5s --start-period=60s --retries=3 \
-  CMD wget -qO- http://localhost:10000/actuator/health || exit 1
-
 # ------------------------------------- COMANDOS ----------------------------------------------------------
 # Construir la imagen, ATENCION!!! existe un punto al final que se debe incluir
 #> docker build -t devops:latest .
