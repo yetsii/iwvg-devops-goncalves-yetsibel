@@ -72,8 +72,6 @@ jobs:
             docker run -d \
               --name ${{ env.ARTIFACT }} \
               --restart always \
-              --memory 256m \
-              --memory-swap 512m \
               --network devopsNet \
               -p 10000:10000 \
               -e SPRING_PROFILES_ACTIVE=prod \

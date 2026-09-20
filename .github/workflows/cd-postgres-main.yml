@@ -3,7 +3,7 @@ name: CD PostgreSQL
 on:
   push:
     branches:
-      - master
+      - postgres
 
 concurrency:
   group: lightsail-deploy
