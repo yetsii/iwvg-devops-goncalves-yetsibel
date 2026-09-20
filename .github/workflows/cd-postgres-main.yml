@@ -25,33 +25,36 @@ jobs:
             docker rm -f postgres || true
             docker network create devopsNet || true
             docker run -d \
-              --name postgres \
-              --restart always \
-              --network devopsNet \
-              --memory 128m \
-              --memory-swap 128m \
-              -e POSTGRES_USER=${{ secrets.POSTGRES_USER }} \
-              -e POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }} \
-              -e POSTGRES_DB=${{ secrets.POSTGRES_DB }} \
-              --health-cmd="pg_isready -U ${{ secrets.POSTGRES_USER }} -d ${{ secrets.POSTGRES_DB }}" \
-              --health-interval=5s \
-              --health-timeout=5s \
-              --health-retries=5 \
-              --health-start-period=10s \
-              postgres:15.10 -c shared_buffers=32MB -c max_connections=20
+            --name postgres \
+            --restart always \
+            --network devopsNet \
+            --memory 192m \
+            --memory-swap 192m \
+            -v postgres_data:/var/lib/postgresql/data \
+            -e POSTGRES_USER=${{ secrets.POSTGRES_USER }} \
+            -e POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }} \
+            -e POSTGRES_DB=${{ secrets.POSTGRES_DB }} \
+            --health-cmd="pg_isready -U ${{ secrets.POSTGRES_USER }} -d ${{ secrets.POSTGRES_DB }}" \
+            --health-interval=5s \
+            --health-timeout=5s \
+            --health-retries=10 \
+            --health-start-period=90s \
+            postgres:15.10 -c shared_buffers=32MB -c max_connections=20            
 
-            echo "⏳ Esperando a que Postgres esté healthy..."
-            for i in $(seq 1 30); do
+            command_timeout: 4m
+            ...
+              echo "⏳ Esperando a que Postgres esté healthy..."
+              for i in $(seq 1 60); do
               STATUS=$(docker inspect --format='{{.State.Health.Status}}' postgres)
-              echo "Intento $i: $STATUS"
+            echo "Intento $i: $STATUS"
               if [ "$STATUS" = "healthy" ]; then
-                echo "✅ Postgres está healthy"
-                exit 0
+              echo "✅ Postgres está healthy"
+              exit 0
               fi
-              sleep 2
-            done
-
-            echo "❌ Postgres no llegó a healthy a tiempo"
-            docker inspect --format='{{json .State}}' postgres
-            docker logs postgres
-            exit 1
+              sleep 3
+              done
+              
+              echo "❌ Postgres no llegó a healthy a tiempo"
+              docker inspect --format='{{range .State.Health.Log}}{{.Start}} | exit={{.ExitCode}} | {{.Output}}{{"\n"}}{{end}}' postgres
+              docker logs --tail 50 postgres
+              exit 1
