@@ -19,7 +19,7 @@ import static org.assertj.core.api.Assertions.assertThat;
         "info.app.build=20260918",
         "spring.autoconfigure.exclude=org.springframework.boot.autoconfigure.security.reactive.ReactiveSecurityAutoConfiguration"
 })
-class SystemControllerFT {
+class SystemControllerTest {
 
     @Autowired
     private WebTestClient webTestClient;
