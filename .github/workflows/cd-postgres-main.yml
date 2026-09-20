@@ -5,6 +5,10 @@ on:
     branches:
       - master
 
+concurrency:
+  group: lightsail-deploy
+  cancel-in-progress: false
+
 jobs:
   cd:
     name: Deploy Docker Postgres on AWS Lightsail
