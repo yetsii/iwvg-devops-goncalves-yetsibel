@@ -38,39 +38,11 @@ public class UserController {
     @PutMapping("/{id}/active")
     public ResponseEntity<UserDTO> setActive(
             @PathVariable String id,
-            @RequestParam(value = "active", required = false) Boolean activeParam,
-            @RequestBody(required = false) Object body) {
-        boolean active = resolveActive(activeParam, body, true);
+            @RequestParam(value = "active", defaultValue = "true") boolean active) {
         UserDTO updatedUser = userService.setActive(id, active);
         return ResponseEntity.ok()
                 .header("X-Message", active ? "user activated successfully" : "user deactivated successfully")
                 .body(updatedUser);
     }
 
-    private boolean resolveActive(Boolean activeParam, Object body, boolean defaultValue) {
-        if (body != null) {
-            if (body instanceof Boolean boolValue) {
-                return boolValue;
-            }
-            if (body instanceof String stringValue) {
-                return Boolean.parseBoolean(stringValue);
-            }
-            if (body instanceof Map<?, ?> mapValue) {
-                Object activeValue = mapValue.get("active");
-                if (activeValue == null) {
-                    activeValue = mapValue.get("isActive");
-                }
-                if (activeValue instanceof Boolean boolValue) {
-                    return boolValue;
-                }
-                if (activeValue instanceof String stringValue) {
-                    return Boolean.parseBoolean(stringValue);
-                }
-            }
-        }
-        if (activeParam != null) {
-            return activeParam;
-        }
-        return defaultValue;
-    }
 }

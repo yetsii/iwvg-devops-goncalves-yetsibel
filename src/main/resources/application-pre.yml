@@ -15,7 +15,7 @@ springdoc:
 spring:
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: create
   # Valores creados en Render → Databases → Database → Connect
   # actualizado
   datasource:
