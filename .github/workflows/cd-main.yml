@@ -67,13 +67,14 @@ jobs:
             docker run -d \
               --name ${{ env.ARTIFACT }} \
               --restart always \
-              --memory 256m \
-              --memory-swap 512m \
+              --memory 220m \
+              --memory-swap 220m \
               --network devopsNet \
               -p 10000:10000 \
               -e SPRING_PROFILES_ACTIVE=prod \
               -e POSTGRES_USER="${{ secrets.POSTGRES_USER }}" \
               -e POSTGRES_PASSWORD="${{ secrets.POSTGRES_PASSWORD }}" \
+              -e JAVA_TOOL_OPTIONS="-Xmx160m -Xss256k -XX:MaxMetaspaceSize=80m -XX:+UseSerialGC" \
               --health-cmd="wget -qO- http://localhost:10000/actuator/health || exit 1" \
               --health-interval=10s \
               --health-timeout=5s \
@@ -93,7 +94,20 @@ jobs:
               echo "❌ Deploy fallido"
               echo "--- Estado del contenedor ---"
               docker inspect --format='{{json .State}}' ${{ env.ARTIFACT }}
-              echo "--- Logs ---"
+
+              echo "--- Código de salida ---"
+              docker inspect --format='Exit code: {{.State.ExitCode}} | OOMKilled: {{.State.OOMKilled}}' ${{ env.ARTIFACT }}
+
+              echo "--- Historial de intentos del healthcheck ---"
+              docker inspect --format='{{range .State.Health.Log}}{{.Start}} | exit={{.ExitCode}} | {{.Output}}{{"\n"}}{{end}}' ${{ env.ARTIFACT }}
+
+              echo "--- Memoria disponible en el host ---"
+              free -h
+
+              echo "--- ¿Hubo OOM-killer? ---"
+              dmesg | grep -i "out of memory" | tail -5 || echo "sin coincidencias"
+
+              echo "--- Logs de la app (últimas 80 líneas) ---"
               docker logs --tail 80 ${{ env.ARTIFACT }}
               exit 1
             fi
