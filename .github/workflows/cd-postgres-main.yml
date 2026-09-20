@@ -24,6 +24,8 @@ jobs:
               --name postgres \
               --restart always \
               --network devopsNet \
+              --memory 128m \
+              --memory-swap 128m \
               -e POSTGRES_USER=${{ secrets.POSTGRES_USER }} \
               -e POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }} \
               -e POSTGRES_DB=${{ secrets.POSTGRES_DB }} \
@@ -32,7 +34,7 @@ jobs:
               --health-timeout=5s \
               --health-retries=5 \
               --health-start-period=10s \
-              postgres:15.10
+              postgres:15.10 -c shared_buffers=32MB -c max_connections=20
 
             echo "⏳ Esperando a que Postgres esté healthy..."
             for i in $(seq 1 30); do
@@ -46,5 +48,6 @@ jobs:
             done
 
             echo "❌ Postgres no llegó a healthy a tiempo"
+            docker inspect --format='{{json .State}}' postgres
             docker logs postgres
             exit 1
