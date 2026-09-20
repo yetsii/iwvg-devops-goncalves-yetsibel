@@ -27,4 +27,24 @@ jobs:
               -e POSTGRES_USER=${{ secrets.POSTGRES_USER }} \
               -e POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }} \
               -e POSTGRES_DB=${{ secrets.POSTGRES_DB }} \
+              --health-cmd="pg_isready -U ${{ secrets.POSTGRES_USER }} -d ${{ secrets.POSTGRES_DB }}" \
+              --health-interval=5s \
+              --health-timeout=5s \
+              --health-retries=5 \
+              --health-start-period=10s \
               postgres:15.10
+
+            echo "⏳ Esperando a que Postgres esté healthy..."
+            for i in $(seq 1 30); do
+              STATUS=$(docker inspect --format='{{.State.Health.Status}}' postgres)
+              echo "Intento $i: $STATUS"
+              if [ "$STATUS" = "healthy" ]; then
+                echo "✅ Postgres está healthy"
+                exit 0
+              fi
+              sleep 2
+            done
+
+            echo "❌ Postgres no llegó a healthy a tiempo"
+            docker logs postgres
+            exit 1
