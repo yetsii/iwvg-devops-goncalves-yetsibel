@@ -14,7 +14,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-class UserDTOServiceTest {
+class UserServiceTest {
 
     private final UserRepository userRepository = mock(UserRepository.class);
     private final UserService userService = new UserService(userRepository);
