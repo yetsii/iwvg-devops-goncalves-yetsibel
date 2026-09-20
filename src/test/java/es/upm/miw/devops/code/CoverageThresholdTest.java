@@ -186,13 +186,13 @@ class CoverageThresholdTest {
         UserDTO activated = service.setActive("1", true);
         assertThat(activated.isActive()).isTrue();
 
-        ResponseEntity<UserDTO> response = controller.setActive("1", null, Map.of("active", false));
+        ResponseEntity<UserDTO> response = controller.setActive("1", false);
         assertThat(response.getStatusCode().is2xxSuccessful()).isTrue();
         assertThat(response.getHeaders().getFirst("X-Message")).isEqualTo("user deactivated successfully");
         assertThat(response.getBody()).isNotNull();
         assertThat(response.getBody().isActive()).isFalse();
 
-        ResponseEntity<UserDTO> queryResponse = controller.setActive("1", true, null);
+        ResponseEntity<UserDTO> queryResponse = controller.setActive("1", true);
         assertThat(queryResponse.getHeaders().getFirst("X-Message")).isEqualTo("user activated successfully");
 
         doNothing().when(repository).deleteById("1");
