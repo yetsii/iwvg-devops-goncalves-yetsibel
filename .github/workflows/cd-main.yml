@@ -76,9 +76,8 @@ jobs:
               -e SPRING_PROFILES_ACTIVE=prod \
               -e POSTGRES_USER="${{ secrets.POSTGRES_USER }}" \
               -e POSTGRES_PASSWORD="${{ secrets.POSTGRES_PASSWORD }}" \
-              --memory 160m \
-              --memory-swap 160m \
-              -e JAVA_TOOL_OPTIONS="-Xmx100m -Xss256k -XX:MaxMetaspaceSize=60m -XX:+UseSerialGC -XX:TieredStopAtLevel=1 -Xshare:off -XX:CICompilerCount=1" \
+              --memory 256m \
+              --memory-swap 512m \
               --health-cmd="wget -qO- http://localhost:10000/actuator/health || exit 1" \
               --health-interval=10s \
               --health-timeout=5s \
