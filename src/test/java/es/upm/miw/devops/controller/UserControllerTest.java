@@ -16,6 +16,8 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -82,6 +84,57 @@ class UserControllerTest {
                 .expectBody()
                 .jsonPath("$.code").isEqualTo(404)
                 .jsonPath("$.message").value(message -> assertThat(String.valueOf(message)).contains("User not found: 999"));
+    }
+
+    @Test
+    void testUpdateUserById() {
+        UserDTO request = new UserDTO("1", "Oscar", "García", true, false, List.of(new Fraction(1, 1)));
+        UserDTO response = new UserDTO("1", "Oscar", "García", true, false, List.of(new Fraction(1, 1)));
+        when(userService.update(eq("1"), any(UserDTO.class))).thenReturn(response);
+
+        webTestClient.put()
+                .uri("/users/1")
+                .bodyValue(request)
+                .exchange()
+                .expectStatus().isOk()
+                .expectHeader().valueEquals("X-Message", "user updated successfully")
+                .expectBody(UserDTO.class)
+                .value(user -> {
+                    assertThat(user.getId()).isEqualTo("1");
+                    assertThat(user.getFamilyName()).isEqualTo("García");
+                    assertThat(user.isActive()).isFalse();
+                });
+    }
+
+    @Test
+    void testUpdateUserByIdNotFound() {
+        UserDTO request = new UserDTO("999", "Ana", "Pérez", true, List.of(new Fraction(1, 1)));
+        when(userService.update(eq("999"), any(UserDTO.class))).thenThrow(new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found: 999"));
+
+        webTestClient.put()
+                .uri("/users/999")
+                .bodyValue(request)
+                .exchange()
+                .expectStatus().isNotFound()
+                .expectBody()
+                .jsonPath("$.code").isEqualTo(404)
+                .jsonPath("$.message").value(message -> assertThat(String.valueOf(message)).contains("User not found: 999"));
+    }
+
+    @Test
+    void testUpdateUserByIdCannotChangeId() {
+        UserDTO request = new UserDTO("999", "Ana", "Pérez", true, true, List.of(new Fraction(1, 1)));
+        when(userService.update(eq("1"), any(UserDTO.class)))
+                .thenThrow(new ResponseStatusException(HttpStatus.NOT_FOUND, "User id cannot be modified"));
+
+        webTestClient.put()
+                .uri("/users/1")
+                .bodyValue(request)
+                .exchange()
+                .expectStatus().isNotFound()
+                .expectBody()
+                .jsonPath("$.code").isEqualTo(404)
+                .jsonPath("$.message").value(message -> assertThat(String.valueOf(message)).contains("User id cannot be modified"));
     }
 
     @Test

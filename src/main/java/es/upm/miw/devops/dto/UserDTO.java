@@ -3,6 +3,7 @@ package es.upm.miw.devops.dto;
 import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import es.upm.miw.devops.code.Fraction;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,6 +37,7 @@ public class UserDTO {
         this.fractions = fractions;
     }
 
+    @Schema(hidden = true, description = "Identificador del usuario. Se define en la URL y no se modifica en el body.")
     public String getId() {
         return id;
     }
