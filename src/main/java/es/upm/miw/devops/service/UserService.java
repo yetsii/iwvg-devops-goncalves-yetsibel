@@ -42,6 +42,33 @@ public class UserService {
         return toDto(userRepository.save(user));
     }
 
+    @Transactional
+    public UserDTO update(String id, UserDTO userDTO) {
+        if (userDTO == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User payload is required");
+        }
+        if (userDTO.getId() != null && !id.equals(userDTO.getId())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User id cannot be modified");
+        }
+
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found: " + id));
+
+        if (userDTO.getName() != null) {
+            user.setName(userDTO.getName());
+        }
+        if (userDTO.getFamilyName() != null) {
+            user.setFamilyName(userDTO.getFamilyName());
+        }
+        if (userDTO.getFractions() != null) {
+            user.setFractions(userDTO.getFractions());
+        }
+        user.setId(id);
+        user.setActive(userDTO.isActive());
+
+        return toDto(userRepository.save(user));
+    }
+
     private static UserDTO toDto(User user) {
         UserDTO dto = new UserDTO(user.getId(), user.getName(), user.getFamilyName(), user.getFractions());
         dto.setBillable(user.isBillable());

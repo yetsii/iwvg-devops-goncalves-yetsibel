@@ -7,12 +7,13 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/user")
+@RequestMapping({"/user", "/users"})
 public class UserController {
 
     private final UserService userService;
@@ -30,6 +31,14 @@ public class UserController {
     public ResponseEntity<Void> deleteById(@PathVariable String id) {
         userService.delete(id);
         return ResponseEntity.noContent().header("X-Message", "user deleted successfully").build();
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<UserDTO> updateById(@PathVariable String id, @RequestBody UserDTO userDTO) {
+        UserDTO updatedUser = userService.update(id, userDTO);
+        return ResponseEntity.ok()
+                .header("X-Message", "user updated successfully")
+                .body(updatedUser);
     }
 
     @PutMapping("/{id}/active")
