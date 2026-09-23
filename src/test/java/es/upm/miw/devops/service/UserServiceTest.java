@@ -1,6 +1,7 @@
 package es.upm.miw.devops.service;
 
 import es.upm.miw.devops.code.Fraction;
+import es.upm.miw.devops.dto.UserActivePatchRequestDTO;
 import es.upm.miw.devops.dto.UserDTO;
 import es.upm.miw.devops.model.User;
 import es.upm.miw.devops.repository.UserRepository;
@@ -45,5 +46,43 @@ class UserServiceTest {
         assertThatThrownBy(() -> userService.findById("999"))
                 .isInstanceOf(ResponseStatusException.class)
                 .hasMessageContaining("User not found: 999");
+    }
+
+    @Test
+    void testUpdateActiveBulkUpdatesOnlyActiveFlag() {
+        User firstUser = new User("1", "Oscar", "Fernandez", List.of(new Fraction(1, 1)));
+        firstUser.setEmail("oscar@example.com");
+        firstUser.setIdentity("12345678A");
+        firstUser.setAddress("Calle Mayor 1");
+        firstUser.setCity("Madrid");
+        firstUser.setProvince("Madrid");
+        firstUser.setPostalCode("28001");
+        firstUser.setActive(true);
+
+        User secondUser = new User("2", "Ana", "Pérez", List.of(new Fraction(2, 1)));
+        secondUser.setEmail("ana@example.com");
+        secondUser.setIdentity("98765432B");
+        secondUser.setAddress("Avenida Central 2");
+        secondUser.setCity("Barcelona");
+        secondUser.setProvince("Barcelona");
+        secondUser.setPostalCode("08001");
+        secondUser.setActive(false);
+
+        when(userRepository.findById("1")).thenReturn(java.util.Optional.of(firstUser));
+        when(userRepository.findById("2")).thenReturn(java.util.Optional.of(secondUser));
+        when(userRepository.save(org.mockito.ArgumentMatchers.any(User.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        List<UserDTO> result = userService.updateActive(List.of(
+                new UserActivePatchRequestDTO("1", false),
+                new UserActivePatchRequestDTO("2", true)
+        ));
+
+        assertThat(result).hasSize(2);
+        assertThat(result.get(0).getId()).isEqualTo("1");
+        assertThat(result.get(0).isActive()).isFalse();
+        assertThat(result.get(0).getName()).isEqualTo("Oscar");
+        assertThat(result.get(1).getId()).isEqualTo("2");
+        assertThat(result.get(1).isActive()).isTrue();
+        assertThat(result.get(1).getName()).isEqualTo("Ana");
     }
 }
