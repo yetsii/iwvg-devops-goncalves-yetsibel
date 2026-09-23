@@ -95,9 +95,9 @@ docker run -d --name iwvg-devops -p 8080:8080 iwvg-devops-goncalves-yetsibel:lat
 
 - `/` → información básica de la aplicación
 - `/version-badge` → badge SVG dinámico generado por la app
-- `/user/{id}` → consulta un usuario por su id
-- `/user/{id}` (DELETE) → elimina un usuario
-- `/user/{id}/active?active=true|false` → activa o desactiva un usuario
+- `/users/{id}` → consulta un usuario por su id
+- `/users/{id}` (DELETE) → elimina un usuario
+- `/users/{id}/active?active=true|false` → activa o desactiva un usuario
 - `/actuator/health` → estado del servicio
 - `/actuator/info` → información del artefacto y build
 - `/swagger-ui.html` → documentación OpenAPI/Swagger

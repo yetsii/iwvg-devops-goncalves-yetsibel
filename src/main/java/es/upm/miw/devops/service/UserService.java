@@ -1,5 +1,6 @@
 package es.upm.miw.devops.service;
 
+import es.upm.miw.devops.dto.UserActivePatchRequestDTO;
 import es.upm.miw.devops.dto.UserDTO;
 import es.upm.miw.devops.model.User;
 import es.upm.miw.devops.repository.UserRepository;
@@ -8,6 +9,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @Service
@@ -40,6 +43,27 @@ public class UserService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found: " + id));
         user.setActive(active);
         return toDto(userRepository.save(user));
+    }
+
+    @Transactional
+    public List<UserDTO> updateActive(List<UserActivePatchRequestDTO> userUpdates) {
+        if (userUpdates == null || userUpdates.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Users payload is required");
+        }
+
+        List<UserDTO> updatedUsers = new ArrayList<>();
+        for (UserActivePatchRequestDTO userUpdate : userUpdates) {
+            if (userUpdate == null || userUpdate.getId() == null || userUpdate.getId().isBlank()) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User id is required");
+            }
+
+            User user = userRepository.findById(userUpdate.getId())
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found: " + userUpdate.getId()));
+
+            user.setActive(userUpdate.isActive());
+            updatedUsers.add(toDto(userRepository.save(user)));
+        }
+        return updatedUsers;
     }
 
     @Transactional
