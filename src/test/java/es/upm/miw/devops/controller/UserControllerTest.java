@@ -1,6 +1,7 @@
 package es.upm.miw.devops.controller;
 
 import es.upm.miw.devops.code.Fraction;
+import es.upm.miw.devops.dto.UserActivePatchRequestDTO;
 import es.upm.miw.devops.dto.UserDTO;
 import es.upm.miw.devops.service.UserService;
 import org.junit.jupiter.api.Test;
@@ -37,7 +38,7 @@ class UserControllerTest {
         when(userService.findById("1")).thenReturn(userDTO);
 
         webTestClient.get()
-                .uri("/user/1")
+                .uri("/users/1")
                 .exchange()
                 .expectStatus().isOk()
                 .expectBody(UserDTO.class)
@@ -53,7 +54,7 @@ class UserControllerTest {
         when(userService.findById("999")).thenThrow(new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found: 999"));
 
         webTestClient.get()
-                .uri("/user/999")
+                .uri("/users/999")
                 .exchange()
                 .expectStatus().isNotFound()
                 .expectBody()
@@ -66,7 +67,7 @@ class UserControllerTest {
         org.mockito.Mockito.doNothing().when(userService).delete("1");
 
         webTestClient.delete()
-                .uri("/user/1")
+                .uri("/users/1")
                 .exchange()
                 .expectStatus().isNoContent()
                 .expectHeader().valueEquals("X-Message", "user deleted successfully");
@@ -78,7 +79,7 @@ class UserControllerTest {
                 .when(userService).delete("999");
 
         webTestClient.delete()
-                .uri("/user/999")
+                .uri("/users/999")
                 .exchange()
                 .expectStatus().isNotFound()
                 .expectBody()
@@ -143,7 +144,7 @@ class UserControllerTest {
         when(userService.setActive("1", true)).thenReturn(userDTO);
 
         webTestClient.put()
-                .uri("/user/1/active?active=true")
+                .uri("/users/1/active?active=true")
                 .exchange()
                 .expectStatus().isOk()
                 .expectHeader().valueEquals("X-Message", "user activated successfully")
@@ -159,7 +160,49 @@ class UserControllerTest {
         when(userService.setActive("999", true)).thenThrow(new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found: 999"));
 
         webTestClient.put()
-                .uri("/user/999/active?active=true")
+                .uri("/users/999/active?active=true")
+                .exchange()
+                .expectStatus().isNotFound()
+                .expectBody()
+                .jsonPath("$.code").isEqualTo(404)
+                .jsonPath("$.message").value(message -> assertThat(String.valueOf(message)).contains("User not found: 999"));
+    }
+
+    @Test
+    void testPatchUsersActive() {
+        List<UserActivePatchRequestDTO> request = List.of(
+                new UserActivePatchRequestDTO("1", false),
+                new UserActivePatchRequestDTO("2", true)
+        );
+        List<UserDTO> response = List.of(
+                new UserDTO("1", "Oscar", "Fernandez", true, false, List.of(new Fraction(1, 1))),
+                new UserDTO("2", "Ana", "Pérez", true, true, List.of(new Fraction(2, 1)))
+        );
+        when(userService.updateActive(any())).thenReturn(response);
+
+        webTestClient.patch()
+                .uri("/users")
+                .bodyValue(request)
+                .exchange()
+                .expectStatus().isOk()
+                .expectHeader().valueEquals("X-Message", "users updated successfully")
+                .expectBodyList(UserDTO.class)
+                .hasSize(2)
+                .value(users -> {
+                    assertThat(users.get(0).getId()).isEqualTo("1");
+                    assertThat(users.get(0).isActive()).isFalse();
+                    assertThat(users.get(1).getId()).isEqualTo("2");
+                    assertThat(users.get(1).isActive()).isTrue();
+                });
+    }
+
+    @Test
+    void testPatchUsersActiveNotFound() {
+        when(userService.updateActive(any())).thenThrow(new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found: 999"));
+
+        webTestClient.patch()
+                .uri("/users")
+                .bodyValue(List.of(new UserActivePatchRequestDTO("999", true)))
                 .exchange()
                 .expectStatus().isNotFound()
                 .expectBody()
