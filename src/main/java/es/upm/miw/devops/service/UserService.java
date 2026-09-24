@@ -41,6 +41,7 @@ public class UserService {
     public UserDTO setActive(String id, boolean active) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found: " + id));
+        validateActiveStatusChange(user);
         user.setActive(active);
         return toDto(userRepository.save(user));
     }
@@ -60,6 +61,7 @@ public class UserService {
             User user = userRepository.findById(userUpdate.getId())
                     .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found: " + userUpdate.getId()));
 
+            validateActiveStatusChange(user);
             user.setActive(userUpdate.isActive());
             updatedUsers.add(toDto(userRepository.save(user)));
         }
@@ -78,6 +80,10 @@ public class UserService {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found: " + id));
 
+        if (user.isAdmin() && userDTO.isActive() != user.isActive()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Admin users cannot change active status");
+        }
+
         if (userDTO.getName() != null) {
             user.setName(userDTO.getName());
         }
@@ -93,10 +99,17 @@ public class UserService {
         return toDto(userRepository.save(user));
     }
 
+    private static void validateActiveStatusChange(User user) {
+        if (user.isAdmin()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Admin users cannot change active status");
+        }
+    }
+
     private static UserDTO toDto(User user) {
         UserDTO dto = new UserDTO(user.getId(), user.getName(), user.getFamilyName(), user.getFractions());
         dto.setBillable(user.isBillable());
         dto.setActive(user.isActive());
+        dto.setAdmin(user.isAdmin());
         return dto;
     }
 }

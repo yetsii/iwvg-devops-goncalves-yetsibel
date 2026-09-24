@@ -14,6 +14,7 @@ public class UserDTO {
     private String familyName;
     private boolean isBillable;
     private boolean active = true;
+    private boolean admin = false;
     private List<Fraction> fractions;
 
     public UserDTO() {
@@ -78,6 +79,18 @@ public class UserDTO {
     @JsonAlias({"active", "isActive"})
     public void setActive(boolean active) {
         this.active = active;
+    }
+
+    @JsonProperty("isAdmin")
+    @JsonAlias({"admin", "isAdmin"})
+    public boolean isAdmin() {
+        return admin;
+    }
+
+    @JsonProperty("isAdmin")
+    @JsonAlias({"admin", "isAdmin"})
+    public void setAdmin(boolean admin) {
+        this.admin = admin;
     }
 
     public List<Fraction> getFractions() {
