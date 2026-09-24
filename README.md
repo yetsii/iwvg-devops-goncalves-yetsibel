@@ -72,11 +72,11 @@ mvn spring-boot:run
 
 La aplicación queda disponible en:
 
-- http://localhost:8080
-- Swagger UI: http://localhost:8080/swagger-ui.html
-- OpenAPI JSON: http://localhost:8080/v3/api-docs
-- Health: http://localhost:8080/actuator/health
-- Info: http://localhost:8080/actuator/info
+- http://localhost:10000
+- Swagger UI: http://localhost:10000/swagger-ui.html
+- OpenAPI JSON: http://localhost:10000/v3/api-docs
+- Health: http://localhost:10000/actuator/health
+- Info: http://localhost:10000/actuator/info
 
 ### Con Docker Compose
 
@@ -88,16 +88,18 @@ También puede compilarse y ejecutarse manualmente:
 
 ```bash
 docker build -t iwvg-devops-goncalves-yetsibel:latest .
-docker run -d --name iwvg-devops -p 8080:8080 iwvg-devops-goncalves-yetsibel:latest
+docker run -d --name iwvg-devops -p 10000:10000 iwvg-devops-goncalves-yetsibel:latest
 ```
 
 ## Endpoints principales
 
-- `/` → información básica de la aplicación
-- `/version-badge` → badge SVG dinámico generado por la app
-- `/users/{id}` → consulta un usuario por su id
+- `/` (GET) → información básica de la aplicación y enlaces de utilidades
+- `/version-badge` (GET) → badge SVG dinámico generado por la aplicación
+- `/users/{id}` (GET) → consulta un usuario por su id
+- `/users/{id}` (PUT) → actualiza los datos de un usuario
 - `/users/{id}` (DELETE) → elimina un usuario
-- `/users/{id}/active?active=true|false` → activa o desactiva un usuario
+- `/users/{id}/active?active=true|false` (PUT) → activa o desactiva un usuario
+- `/users` (PATCH) → actualiza el estado activo de varios usuarios en lote
 - `/actuator/health` → estado del servicio
 - `/actuator/info` → información del artefacto y build
 - `/swagger-ui.html` → documentación OpenAPI/Swagger
@@ -207,7 +209,6 @@ Esto permite supervisar rápidamente la calidad y disponibilidad de la integraci
 ├── Dockerfile
 ├── LICENSE.md
 ├── README.md
-├── cp.txt
 ├── docker-compose.yml
 ├── docker-compose-db.yml
 ├── pom.xml
