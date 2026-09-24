@@ -45,6 +45,9 @@ public class User {
     @Column(name = "active", nullable = false)
     private boolean active = true;
 
+    @Column(name = "admin", nullable = false)
+    private boolean admin = false;
+
     @Transient
     private List<Fraction> fractions;
 
@@ -100,6 +103,14 @@ public class User {
 
     public void setActive(boolean active) {
         this.active = active;
+    }
+
+    public boolean isAdmin() {
+        return admin;
+    }
+
+    public void setAdmin(boolean admin) {
+        this.admin = admin;
     }
 
     public String getEmail() {

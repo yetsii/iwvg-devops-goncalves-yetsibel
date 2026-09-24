@@ -85,4 +85,23 @@ class UserServiceTest {
         assertThat(result.get(1).isActive()).isTrue();
         assertThat(result.get(1).getName()).isEqualTo("Ana");
     }
+
+    @Test
+    void testUpdateActiveRejectsAdminUsers() {
+        User adminUser = new User("99", "Admin", "User", List.of(new Fraction(1, 1)));
+        adminUser.setEmail("admin@example.com");
+        adminUser.setIdentity("11111111Z");
+        adminUser.setAddress("Calle Admin 1");
+        adminUser.setCity("Madrid");
+        adminUser.setProvince("Madrid");
+        adminUser.setPostalCode("28001");
+        adminUser.setActive(true);
+        adminUser.setAdmin(true);
+
+        when(userRepository.findById("99")).thenReturn(java.util.Optional.of(adminUser));
+
+        assertThatThrownBy(() -> userService.updateActive(List.of(new UserActivePatchRequestDTO("99", false))))
+                .isInstanceOf(ResponseStatusException.class)
+                .hasMessageContaining("Admin users cannot change active status");
+    }
 }
